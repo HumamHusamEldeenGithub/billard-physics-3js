@@ -8,7 +8,8 @@ export function tableLoader() {
     loader.load('./Models/plane.glb', function(gltf) {
         var table = gltf.scene;
         table.position.y = -0.22;
-        table.scale.set(9, 1, 6);
+        table.scale.set(12, 1, 8);
+        table.name = "table";
         MainScene.addToScene(gltf.scene);
 
     }, undefined, function(error) {

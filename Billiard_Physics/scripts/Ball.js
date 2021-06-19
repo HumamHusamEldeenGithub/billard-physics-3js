@@ -1,21 +1,28 @@
-import * as THREE from '../three/build/three';
+import * as THREE from '../three';
 import { GLTFLoader } from '../three/examples/jsm/loaders/GLTFLoader.js';
 import * as MainScene from '../main';
 
 
 export function createBall(position, name, color) {
-    const loader = new GLTFLoader();
-    loader.load('./Models/ball.glb', function(gltf) {
-        var ball = gltf.scene;
-        ball.position.set(position.x, position.y, position.z);
-        ball.name = name;
-        MainScene.addToScene(ball);
+    // const loader = new GLTFLoader();
+    // loader.load('./Models/ball.glb', function(gltf) {
+    //     var ball = gltf.scene;
+    //     ball.position.set(position.x, position.y, position.z);
+    //     ball.name = name;
+    //     MainScene.addToScene(ball);
 
-    }, undefined, function(error) {
+    // }, undefined, function(error) {
 
-        console.error(error);
+    //     console.error(error);
 
-    });
+    // });
+    const geometry = new THREE.SphereGeometry(0.5, 32, 32);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const sphere = new THREE.Mesh(geometry, material);
+    sphere.name = name;
+    sphere.position.set(position.x, position.y, position.z);
+    MainScene.addToScene(sphere);
+    console.log("ENTER");
 }
 
 
