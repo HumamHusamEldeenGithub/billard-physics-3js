@@ -3,11 +3,12 @@ import { GLTFLoader } from '../three/examples/jsm/loaders/GLTFLoader.js';
 import * as MainScene from '../main';
 
 
-export function createBall(position, color) {
+export function createBall(position, name, color) {
     const loader = new GLTFLoader();
     loader.load('./Models/ball.glb', function(gltf) {
         var ball = gltf.scene;
         ball.position.set(position.x, position.y, position.z);
+        ball.name = name;
         MainScene.addToScene(ball);
 
     }, undefined, function(error) {

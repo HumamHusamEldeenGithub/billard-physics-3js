@@ -53,6 +53,7 @@ var animate = function() {
 };
 
 export function render() {
+    move();
     renderer.render(scene, camera);
 }
 
@@ -61,10 +62,43 @@ export function addToScene(obj) {
     scene.add(obj);
 }
 
+
+var velocity = 0.2;
+var frection = 0.002;
+
+function move() {
+    var temp = scene.getObjectByName("white_ball");
+    if (temp) {
+        if (velocity > 0.001) {
+            temp.position.x += velocity;
+            velocity -= frection;
+        }
+    }
+}
+
 init();
 animate();
 
 
 Table.tableLoader();
 Ball.create8Balls(7, -0.8);
-Ball.createBall({ x: -5, y: 0, z: 0 }, 0xffffff);
+Ball.createBall({ x: -5, y: 0, z: 0 }, 'white_ball', 0xffffff);
+
+
+
+// function addKnot() {
+//     var knot = new THREE.Mesh(
+//         new THREE.TorusKnotGeometry(0.5, 0.1),
+//         new MeshNormalMaterial({ Color: 0x000000 }));
+
+//     var knotBSphere = new Sphere(
+//         knot.position,
+//         knot.geometry.boundingSphere.radius);
+
+//     knot.scale.set(2, 2, 2);
+//     knotBSphere.radius = knot.geometry.radius * 2;
+
+//     scene.add(knotBSphere);
+//     console.log(scene);
+// }
+// addKnot();
