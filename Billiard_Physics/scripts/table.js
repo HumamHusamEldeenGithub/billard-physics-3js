@@ -10,7 +10,8 @@ export function tableLoader() {
         table.position.y = -0.22;
         table.scale.set(12, 1, 8);
         table.name = "table";
-        MainScene.addToScene(gltf.scene);
+        MainScene.addToScene("table", gltf.scene);
+        return;
 
     }, undefined, function(error) {
 

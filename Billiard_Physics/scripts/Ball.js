@@ -1,6 +1,7 @@
 import * as THREE from '../three';
 import { GLTFLoader } from '../three/examples/jsm/loaders/GLTFLoader.js';
 import * as MainScene from '../main';
+import { SceneObjects } from './movment';
 
 
 export function createBall(position, name, color) {
@@ -21,8 +22,8 @@ export function createBall(position, name, color) {
     const sphere = new THREE.Mesh(geometry, material);
     sphere.name = name;
     sphere.position.set(position.x, position.y, position.z);
-    MainScene.addToScene(sphere);
-    console.log("ENTER");
+    MainScene.addToScene(name, sphere);
+    SceneObjects.set(name, { reference: sphere, velocity: 0 });
 }
 
 

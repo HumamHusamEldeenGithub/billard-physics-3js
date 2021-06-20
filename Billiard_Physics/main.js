@@ -3,6 +3,7 @@ import { OrbitControls } from './three/examples/jsm/controls/OrbitControls';
 import Stats from './three/examples/jsm/libs/stats.module';
 import * as Ball from './scripts/Ball.js';
 import * as Table from './scripts/table';
+import * as Movement from './scripts/movment';
 
 var scene = null,
     camera = null,
@@ -12,7 +13,11 @@ var scene = null,
     stats = null,
     ambientLight = null;
 
-function init() {
+
+
+var SceneObjects = null;
+
+async function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
 
@@ -42,122 +47,50 @@ function init() {
 
     stats = Stats();
     document.body.appendChild(stats.dom);
+    var button = document.createElement('button');
+    button.innerHTML = "START";
+    button.style = "position: absolute;right: 0;top:0;";
+    button.onclick = start;
+    document.body.appendChild(button);
+
+    Table.tableLoader();
+    createBalls();
 }
 
+async function start() {
+    Movement.SceneObjects.get('white_ball').velocity = 0.1;
+}
+
+export async function changeVelocity(name, value) {
+    Movement.SceneObjects.set(name, { reference: value.reference, velocity: value.velocity });
+}
 
 var animate = function() {
+
     requestAnimationFrame(animate);
     controls.update();
     render();
     stats.update();
+
 };
 
-export function render() {
-    collision();
-    move();
-
+export async function render() {
+    Movement.move();
     renderer.render(scene, camera);
 }
 
-
-export function addToScene(obj) {
+export async function addToScene(name, obj) {
     scene.add(obj);
-    console.log(scene);
+    console.log(scene.children);
 }
 
 
-var velocity = 0.2;
-var frection = 0.002;
-var moving_Ball = "white_ball";
 
-function move() {
-    var temp = scene.getObjectByName(moving_Ball);
-    if (temp) {
-
-        if (velocity > 0.00001) {
-            temp.position.x += velocity;
-            velocity -= frection;
-        }
-    }
+function createBalls() {
+    Ball.createBall({ x: -5, y: 0.3, z: 0 }, 'white_ball', 0xffffff);
+    Ball.createBall({ x: 5, y: 0.3, z: 0 }, 'second_ball', 0xffffff);
 }
+// Ball.create8Balls(7, -0.8);
 
 init();
 animate();
-
-
-Table.tableLoader();
-// Ball.create8Balls(7, -0.8);
-// Ball.createBall({ x: -5, y: 0, z: 0 }, 'white_ball', 0xffffff);
-var position = { x: -9, y: 0.3, z: 0 };
-var geometry = new THREE.SphereGeometry(0.5, 32, 32);
-var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-var sphere = new THREE.Mesh(geometry, material);
-sphere.name = "white_ball";
-sphere.position.set(position.x, position.y, position.z);
-scene.add(sphere);
-
-
-var position = { x: -1, y: 0.3, z: 0 };
-geometry = new THREE.SphereGeometry(0.5, 32, 32);
-material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-sphere = new THREE.Mesh(geometry, material);
-sphere.name = "second_ball";
-sphere.position.set(position.x, position.y, position.z);
-scene.add(sphere);
-
-
-
-
-function collision() {
-    var objs = scene.children;
-    //console.log(objs);
-    for (var i = 0; i < objs.length; i++) {
-        if (objs[i].name == "table") {
-            continue;
-        }
-        var ball = objs[i];
-        for (var j = 0; j < objs.length; j++) {
-            if (ball.id != objs[j].id && objs[j].name != "table") {
-                var pos = objs[j].position;
-                var dis = pos.distanceTo(ball.position);
-                //console.log(dis);
-                if (dis < 1) {
-                    moving_Ball = "second_ball";
-                    //console.log(dis);
-                }
-            }
-
-        }
-    }
-    // for (var vertexIndex = 0; vertexIndex < temp.geometry.vertices.length; vertexIndex++) {
-    //     var localVertex = temp.geometry.vertices[vertexIndex].clone();
-    //     var globalVertex = localVertex.applyMatrix4(temp.matrix);
-    //     var directionVector = globalVertex.sub(temp.position);
-
-    //     var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-    //     var collisionResults = ray.intersectObjects(collidableMeshList);
-    //     if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length())
-    //         velocity = 0;
-    // }
-}
-
-
-
-
-
-// function addKnot() {
-//     var knot = new THREE.Mesh(
-//         new THREE.TorusKnotGeometry(0.5, 0.1),
-//         new MeshNormalMaterial({ Color: 0x000000 }));
-
-//     var knotBSphere = new Sphere(
-//         knot.position,
-//         knot.geometry.boundingSphere.radius);
-
-//     knot.scale.set(2, 2, 2);
-//     knotBSphere.radius = knot.geometry.radius * 2;
-
-//     scene.add(knotBSphere);
-//     console.log(scene);
-// }
-// addKnot();
