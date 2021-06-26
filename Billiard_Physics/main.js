@@ -63,6 +63,11 @@ var animate = function() {
 
 export async function render() {
     Movement.move();
+    // var vector = new THREE.Vector3();
+    // camera.getWorldDirection(vector);
+    // var ray = scene.getObjectByName("ray");
+    // if (ray)
+    //     ray.position.set(vector.x, vector.y, vector.z);
     renderer.render(scene, camera);
 }
 
@@ -80,13 +85,15 @@ animate();
 
 export async function start() {
     var ball = scene.getObjectByName("white-ball");
-    hitBall(100, ball);
+    hitBall(5, 0, 100, ball);
 }
-export async function hitBall(v, ball) {
+export async function hitBall(x, z, v, ball) {
     var vector = new THREE.Vector3();
     camera.getWorldDirection(vector);
     var dx = vector.x * 50 - ball.position.x;
     var dz = vector.z * 50 - ball.position.z;
+    // var dx = x - ball.position.x;
+    // var dz = z - ball.position.z;
     var h = (Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2)));
     var sin = dz / h;
     var cos = dx / h;
@@ -99,6 +106,7 @@ export function createWorld() {
     tableLoader();
     createWalls();
     createBalls();
+
 }
 
 function createBalls() {
@@ -228,6 +236,33 @@ function updateStickRotation() {
     camera.getWorldDirection(vector);
     var stick = scene.getObjectByName("stick");
     stick.rotation.x = vector.x;
+}
+
+function createRay() {
+    // const loader = new GLTFLoader();
+    // loader.load('./Models/stick.glb', function(gltf) {
+    //     var stick = gltf.scene;
+    //     stick.position.set(position.x - 2, position.y + 0.5, position.z);
+    //     stick.scale.set(1, 1, 1);
+    //     stick.name = "stick";
+    //     stick.rotation.y = -Math.PI / 2;
+    //     //stick.rotation.x = 1.5;
+    //     //scene.add(gltf.scene);
+    //     return;
+
+    // }, undefined, function(error) {
+
+    //     console.error(error);
+
+    // });
+
+    var geometry = new THREE.BoxGeometry(1, 1, 1);
+    var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    var cube = new THREE.Mesh(geometry, material);
+    cube.position.set(0, 0, 0);
+    cube.name = 'ray';
+    scene.add(cube);
+
 }
 
 // function updateCameraPosition() {
