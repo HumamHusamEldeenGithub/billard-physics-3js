@@ -87,7 +87,7 @@ animate();
 
 export async function start() {
     var white_ball = scene.getObjectByName("white-ball");
-    hitBall(5, 0.2, Global.POWER, white_ball);
+    hitBall(5, -3, Global.POWER, white_ball);
 }
 export async function hitBall(x, z, v, ball) {
     // var vector = new THREE.Vector3();
@@ -105,6 +105,7 @@ export async function hitBall(x, z, v, ball) {
 
 export function createWorld() {
     tableLoader();
+    createHols();
     createWalls();
     createBalls();
 
@@ -129,7 +130,7 @@ export function tableLoader() {
 }
 export function createWalls() {
     //right wall 
-    var geometry = new THREE.BoxGeometry(0.5, 2.5, 30);
+    var geometry = new THREE.BoxGeometry(0.5, 2.5, 26);
     var material = new THREE.MeshBasicMaterial({ color: 0x402000 });
     var cube = new THREE.Mesh(geometry, material);
     cube.position.set(TABLE_DIMENSIONS.RIGHT, -0.8, 0);
@@ -138,7 +139,7 @@ export function createWalls() {
     scene.add(cube);
 
     //left wall 
-    geometry = new THREE.BoxGeometry(0.5, 2.5, 30);
+    geometry = new THREE.BoxGeometry(0.5, 2.5, 26);
     material = new THREE.MeshBasicMaterial({ color: 0x402000 });
     cube = new THREE.Mesh(geometry, material);
     cube.position.set(TABLE_DIMENSIONS.LEFT, -0.8, 0);
@@ -146,23 +147,86 @@ export function createWalls() {
     cube.normalVector = new THREE.Vector3(1, 0, 0);
     scene.add(cube);
 
-    //top wall 
-    geometry = new THREE.BoxGeometry(52, 2.5, 0.5);
+    //top wall 1
+    geometry = new THREE.BoxGeometry(22, 2.5, 0.5);
     material = new THREE.MeshBasicMaterial({ color: 0x402000 });
     cube = new THREE.Mesh(geometry, material);
-    cube.position.set(0, -0.8, TABLE_DIMENSIONS.TOP);
+    cube.position.set(TABLE_DIMENSIONS.LEFT + 13, -0.8, TABLE_DIMENSIONS.TOP);
+    cube.name = 'topWall';
+    cube.normalVector = new THREE.Vector3(0, 0, 1);
+    scene.add(cube);
+
+    //top wall 2
+    geometry = new THREE.BoxGeometry(22, 2.5, 0.5);
+    material = new THREE.MeshBasicMaterial({ color: 0x402000 });
+    cube = new THREE.Mesh(geometry, material);
+    cube.position.set(TABLE_DIMENSIONS.LEFT + 39, -0.8, TABLE_DIMENSIONS.TOP);
     cube.name = 'topWall';
     cube.normalVector = new THREE.Vector3(0, 0, 1);
     scene.add(cube);
 
     //bottom wall 
-    geometry = new THREE.BoxGeometry(52, 2.5, 0.5);
+    geometry = new THREE.BoxGeometry(22, 2.5, 0.5);
     material = new THREE.MeshBasicMaterial({ color: 0x402000 });
     cube = new THREE.Mesh(geometry, material);
-    cube.position.set(0, -0.8, TABLE_DIMENSIONS.BOTTOM);
+    cube.position.set(TABLE_DIMENSIONS.LEFT + 13, -0.8, TABLE_DIMENSIONS.BOTTOM);
+    cube.name = 'bottomWall1';
+    cube.normalVector = new THREE.Vector3(0, 0, -1);
+    scene.add(cube);
+
+    //bottom wall 
+    geometry = new THREE.BoxGeometry(22, 2.5, 0.5);
+    material = new THREE.MeshBasicMaterial({ color: 0x402000 });
+    cube = new THREE.Mesh(geometry, material);
+    cube.position.set(TABLE_DIMENSIONS.LEFT + 39, -0.8, TABLE_DIMENSIONS.BOTTOM);
     cube.name = 'bottomWall';
     cube.normalVector = new THREE.Vector3(0, 0, -1);
     scene.add(cube);
+}
+
+function createHols() {
+    //top left 
+    var geometry = new THREE.SphereGeometry(2, 32, 32);
+    var material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    var sphere = new THREE.Mesh(geometry, material);
+    sphere.name = "top-left-hole";
+    sphere.position.set(TABLE_DIMENSIONS.LEFT + 0.5, -1.5, TABLE_DIMENSIONS.TOP + 0.5);
+    scene.add(sphere);
+    //bottom left 
+    geometry = new THREE.SphereGeometry(2, 32, 32);
+    material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    sphere = new THREE.Mesh(geometry, material);
+    sphere.name = "bottom-left-hole";
+    sphere.position.set(TABLE_DIMENSIONS.LEFT + 0.5, -1.5, TABLE_DIMENSIONS.BOTTOM - 0.5);
+    scene.add(sphere);
+    //top right 
+    geometry = new THREE.SphereGeometry(2, 32, 32);
+    material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    sphere = new THREE.Mesh(geometry, material);
+    sphere.name = "top-right-hole";
+    sphere.position.set(TABLE_DIMENSIONS.RIGHT - 0.5, -1.5, TABLE_DIMENSIONS.TOP + 0.5);
+    scene.add(sphere);
+    //bottom left 
+    geometry = new THREE.SphereGeometry(2, 32, 32);
+    material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    sphere = new THREE.Mesh(geometry, material);
+    sphere.name = "bottom-right-hole";
+    sphere.position.set(TABLE_DIMENSIONS.RIGHT - 0.5, -1.5, TABLE_DIMENSIONS.BOTTOM - 0.5);
+    scene.add(sphere);
+    //top mid 
+    geometry = new THREE.SphereGeometry(2, 32, 32);
+    material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    sphere = new THREE.Mesh(geometry, material);
+    sphere.name = "top-mid-hole";
+    sphere.position.set(0, -1.5, TABLE_DIMENSIONS.TOP - 0.5);
+    scene.add(sphere);
+    //bottom mid 
+    geometry = new THREE.SphereGeometry(2, 32, 32);
+    material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    sphere = new THREE.Mesh(geometry, material);
+    sphere.name = "top-mid-hole";
+    sphere.position.set(0, -1.5, TABLE_DIMENSIONS.BOTTOM + 0.5);
+    scene.add(sphere);
 }
 
 
