@@ -1,33 +1,25 @@
 import * as MainScene from "../main";
-import * as Movement from "./movment";
 import * as THREE from '../three';
-import { TABLE_DIMENSIONS } from "./table";
+import * as Global from './Global';
 
 
 var thermalEnergy = 0.95;
 
 export async function checkCollision(name, ball) {
-    var one = true;
     var scene = await MainScene.getScene();
-    var list = [];
     scene.children.forEach(async(value2, key2) => {
         if (key2 != name && value2.v) {
             try {
-                var ball1_pos = ball.position.clone().add(ball.v.clone().multiplyScalar(1 / 100));
-                var ball2_pos = value2.position.clone().add(value2.v.clone().multiplyScalar(1 / 100));
 
-                var dis = ball2_pos.distanceTo(ball1_pos);
+                var dx = value2.position.x - ball.position.x;
+                var dz = value2.position.z - ball.position.z;
+                var dis = (Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2)));
 
-                if (dis < 1) {
+                if (dis < Global.BALL_RADIUS * 2) {
 
                     var normalVector = new THREE.Vector3();
 
-                    normalVector.subVectors(ball2_pos, ball1_pos);
-
-                    //TODO : set the ball diameter var 
-                    var mtd = normalVector.clone().multiplyScalar((0.5 - dis) / dis);
-                    ball.position.add(mtd.clone().multiplyScalar(0.1));
-                    value2.position.sub(mtd.clone().multiplyScalar(0.1));
+                    normalVector.subVectors(value2.position, ball.position);
 
                     normalVector.normalize();
 
@@ -50,34 +42,33 @@ export async function checkCollision(name, ball) {
                     value2.v = v2nTag.add(v2tTag);
                     ball.v.multiplyScalar(thermalEnergy);
                     value2.v.multiplyScalar(thermalEnergy);
-                    console.log("BALL " + ball.name + " -HIT : " + value2.name);
+
+                    while (ball.position.distanceTo(value2.position) < Global.BALL_RADIUS * 2) {
+                        ball.position.add(ball.v.clone().multiplyScalar(Global.DELTA_TIME));
+                        value2.position.add(value2.v.clone().multiplyScalar(Global.DELTA_TIME));
+                    }
+
+                    //console.log("BALL " + ball.name + " -HIT : " + value2.name);
                 }
             } catch (e) { console.log(e); }
         } else if (key2 != name) {
             //check if the current ball colliding with any of the table's walls
-
-            //BALL DIAMETER = 1 
-            if ((ball.position.z <= TABLE_DIMENSIONS.TOP + 1)) {
-                ball.v = new THREE.Vector3(ball.v.x, 0, -ball.v.z);
-                ball.position.z = TABLE_DIMENSIONS.TOP + 1.000001;
-                ball.v.multiplyScalar(0.95);
+            if (value2.name.includes('Wall')) {
+                var ball_pos = ball.position.clone().add(ball.v.clone().multiplyScalar(1 / 100));
+                var wall_pos = value2.position.clone();
+                var newVelocity = new THREE.Vector3();
+                if (Math.abs(wall_pos.x - ball_pos.x) < Global.BALL_RADIUS && wall_pos.z == 0) {
+                    newVelocity.x = ball.v.x - 2 * (ball.v.x * value2.normalVector.x) * value2.normalVector.x;
+                    ball.position.x = value2.position.x + (value2.normalVector.x * (Global.BALL_RADIUS + 0.0001));
+                    ball.v.set(newVelocity.x, 0, ball.v.z);
+                    ball.v.multiplyScalar(thermalEnergy);
+                } else if (Math.abs(wall_pos.z - ball_pos.z) < Global.BALL_RADIUS && wall_pos.x == 0) {
+                    newVelocity.z = ball.v.z - 2 * (ball.v.z * value2.normalVector.z) * value2.normalVector.z;
+                    ball.position.z = value2.position.z + (value2.normalVector.z * (Global.BALL_RADIUS + 0.0001));
+                    ball.v.set(ball.v.x, 0, newVelocity.z);
+                    ball.v.multiplyScalar(thermalEnergy);
+                }
             }
-            if (ball.position.z >= TABLE_DIMENSIONS.BOTTOM - 1) {
-                ball.v = new THREE.Vector3(ball.v.x, 0, -ball.v.z);
-                ball.position.z = TABLE_DIMENSIONS.BOTTOM - 1.000001;
-                ball.v.multiplyScalar(0.95);
-            }
-            if (ball.position.x >= TABLE_DIMENSIONS.RIGHT - 1) {
-                ball.v = new THREE.Vector3(-ball.v.x, 0, ball.v.z);
-                ball.position.x = TABLE_DIMENSIONS.RIGHT - 1.000001;
-                ball.v.multiplyScalar(0.95);
-            }
-            if ((ball.position.x <= TABLE_DIMENSIONS.LEFT + 1)) {
-                ball.v = new THREE.Vector3(-ball.v.x, 0, ball.v.z);
-                ball.position.x = TABLE_DIMENSIONS.LEFT + 1.000001;
-                ball.v.multiplyScalar(0.95);
-            }
-
         }
     });
 }
