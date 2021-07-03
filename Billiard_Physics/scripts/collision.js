@@ -58,15 +58,13 @@ export async function checkCollision(name, ball) {
                 var hole_pos = value2.position.clone();
                 hole_pos.y = 0.3;
                 //console.log(ball.position.distanceTo(hole_pos));
-                if (ball.position.distanceTo(hole_pos) < Global.BALL_RADIUS + 0.5) {
-                    ball.position.y = -50;
-                    ball.v.set(0, 0, 0);
-
+                if (ball.position.distanceTo(hole_pos) < Global.BALL_RADIUS + 1.5) {
+                    ball.v = null;
+                    ball.position.set(100, 100, 100);
+                    return;
                 }
 
             }
-
-
 
             //check if the current ball colliding with any of the table's walls
             if (value2.name.includes('Wall')) {
