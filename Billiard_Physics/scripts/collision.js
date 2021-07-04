@@ -40,15 +40,13 @@ export async function checkCollision(name, ball) {
 
                     ball.v = v1nTag.add(v1tTag);
                     value2.v = v2nTag.add(v2tTag);
-                    ball.v.multiplyScalar(Global.THERMAL_ENERGY);
-                    value2.v.multiplyScalar(Global.THERMAL_ENERGY);
+                    ball.v.multiplyScalar(1 - Global.THERMAL_ENERGY);
+                    value2.v.multiplyScalar(1 - Global.THERMAL_ENERGY);
 
                     while (ball.position.distanceTo(value2.position) < Global.BALL_RADIUS * 2) {
                         ball.position.add(ball.v.clone().multiplyScalar(Global.DELTA_TIME));
                         value2.position.add(value2.v.clone().multiplyScalar(Global.DELTA_TIME));
                     }
-
-                    //console.log("BALL " + ball.name + " -HIT : " + value2.name);
                 }
             } catch (e) { console.log(e); }
         } else if (key2 != name) {
@@ -57,7 +55,6 @@ export async function checkCollision(name, ball) {
             if (value2.name.includes('hole')) {
                 var hole_pos = value2.position.clone();
                 hole_pos.y = 0.3;
-                //console.log(ball.position.distanceTo(hole_pos));
                 if (ball.position.distanceTo(hole_pos) < Global.BALL_RADIUS + 1.5) {
                     ball.v = null;
                     ball.position.set(100, 100, 100);
@@ -75,12 +72,12 @@ export async function checkCollision(name, ball) {
                     newVelocity.x = ball.v.x - 2 * (ball.v.x * value2.normalVector.x) * value2.normalVector.x;
                     ball.position.x = value2.position.x + (value2.normalVector.x * (Global.BALL_RADIUS + 0.0001));
                     ball.v.set(newVelocity.x, 0, ball.v.z);
-                    ball.v.multiplyScalar(Global.THERMAL_ENERGY);
+                    ball.v.multiplyScalar(1 - Global.THERMAL_ENERGY);
                 } else if (Math.abs(wall_pos.z - ball_pos.z) < Global.BALL_RADIUS && (value2.name.includes('top') || value2.name.includes('bottom'))) {
                     newVelocity.z = ball.v.z - 2 * (ball.v.z * value2.normalVector.z) * value2.normalVector.z;
                     ball.position.z = value2.position.z + (value2.normalVector.z * (Global.BALL_RADIUS + 0.0001));
                     ball.v.set(ball.v.x, 0, newVelocity.z);
-                    ball.v.multiplyScalar(Global.THERMAL_ENERGY);
+                    ball.v.multiplyScalar(1 - Global.THERMAL_ENERGY);
                 }
             }
         }

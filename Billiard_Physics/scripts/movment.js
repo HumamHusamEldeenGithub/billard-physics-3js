@@ -13,33 +13,47 @@ export async function move() {
 
             Collision.checkCollision(key, value);
 
-
-            if (Math.abs(value.v.x) < 0.001 && Math.abs(value.v.z) < 0.001) {
+            if (Math.abs(value.v.x) < 0.125 && Math.abs(value.v.z) < 0.125) {
                 value.v = new THREE.Vector3();
                 return;
             }
+            var accX = 0,
+                accZ = 0;
+            try { accX = calculateFriction(value.v.x) / Global.BALL_MASS; } catch (e) { value.v.set(0, 0, value.v.z); }
+            try { accZ = calculateFriction(value.v.z) / Global.BALL_MASS; } catch (e) { value.v.set(value.v.x, 0, 0); }
 
-            var accX = calculateFriction(value.v.x);
-            var accZ = calculateFriction(value.v.z);
-            //TODO : add delta time ; 
             var newVelocityX = value.v.x + accX * Global.DELTA_TIME;
             var newVelocityZ = value.v.z + accZ * Global.DELTA_TIME;
-            value.v.set(isNaN(newVelocityX) ? 0 : newVelocityX, 0, isNaN(newVelocityZ) ? 0 : newVelocityZ);
+
+            if (Math.abs(newVelocityX) < 0.125 && Math.abs(newVelocityZ) < 0.125) {
+                value.v.set(0, 0, 0);
+                return;
+
+            }
+
+            value.v.set(newVelocityX, 0, newVelocityZ);
+
             var newPos = new THREE.Vector3();
-            newPos.x = value.position.x + newVelocityX;
-            newPos.z = value.position.z + newVelocityZ;
+            newPos.x = value.position.x + newVelocityX * Global.DELTA_TIME;
+            newPos.z = value.position.z + newVelocityZ * Global.DELTA_TIME;
+
             rotateBall(value, newPos, oldPos);
+
             value.position.z = newPos.z;
             value.position.x = newPos.x;
+            if (value.name == 'white-ball') {
+                console.log(value.v);
+            }
         }
     })
 }
 
-function calculateFriction(velocity) {
-    var friction = (Global.STATIC_FRICTION_COEFFICIENT + Global.KINETIC_FRICTION_COEFFICIENT) * Global.GRAVITY / Global.BALL_RADIUS;
-    if (Math.abs(velocity) < friction)
-        return -velocity;
-    friction = friction * -1 * velocity / Math.abs(velocity);
+function calculateFriction(velocity, ) {
+    var friction = Global.KINETIC_FRICTION_COEFFICIENT * Global.GRAVITY * Global.BALL_MASS * Global.SCALER;
+    if (velocity == 0)
+        return 0;
+    friction = friction * -1 * (velocity / Math.abs(velocity));
+
     return friction;
 }
 

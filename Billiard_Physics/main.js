@@ -56,6 +56,8 @@ async function init() {
     button.style = "position: absolute;right: 0;top:0;padding:20px";
     button.onclick = start;
     document.body.appendChild(button);
+    setSceneInputs();
+    getSceneInputs();
     createWorld();
 }
 
@@ -69,7 +71,6 @@ var animate = function() {
 
 export async function render() {
     Movement.move();
-    //updateCameraPosition();
     updateStickPosition();
     renderer.render(scene, camera);
 }
@@ -84,28 +85,61 @@ export async function getScene() {
 init();
 animate();
 
+function setSceneInputs() {
+    var inputs = document.querySelector('.inputs-div').querySelectorAll('input');
+    for (var i = 0; i < inputs.length; i++) {
+        switch (inputs[i].placeholder) {
+            case 'BALL_RADIUS':
+                inputs[i].value = Global.BALL_RADIUS;
+                break;
+            case 'BALL_MASS':
+                inputs[i].value = Global.BALL_MASS;
+                break;
+            case 'POWER':
+                inputs[i].value = Global.POWER;
+                break;
+            case 'STATIC_FRICTION_COEFFICIENT':
+                inputs[i].value = Global.STATIC_FRICTION_COEFFICIENT;
+                break;
+            case 'KINETIC_FRICTION_COEFFICIENT':
+                inputs[i].value = Global.KINETIC_FRICTION_COEFFICIENT;
+                break;
+            case 'GRAVITY':
+                inputs[i].value = Global.GRAVITY;
+                break;
+            case 'THERMAL_ENERGY':
+                inputs[i].value = Global.THERMAL_ENERGY;
+                break;
+        }
+    }
+}
 
+function getSceneInputs() {
+    var save = document.querySelector('#save-button');
+    save.onclick = updateGlobalValues;
+}
 
+function updateGlobalValues() {
+    var inputs = document.querySelector('.inputs-div').querySelectorAll('input');
+    for (var i = 0; i < inputs.length; i++) {
+        console.log(inputs[i].placeholder + "\t" + inputs[i].value);
+        Global.setValue(inputs[i].placeholder, parseFloat(inputs[i].value));
+    }
+}
 export async function start() {
     var white_ball = scene.getObjectByName("white-ball");
     var stick = scene.getObjectByName("stick");
-    var rotation = stick.rotation.x != 0 ? stick.rotation.y + 1.57 : stick.rotation.y - 1.57;
+    var rotation = stick.rotation.x != 0 ? Math.PI + stick.rotation.y : -stick.rotation.y;
+    console.log(Global.POWER);
     hitBall(rotation, Global.POWER, white_ball);
 }
 export async function hitBall(angle, v, ball) {
-    // var vector = new THREE.Vector3();
-    // camera.getWorldDirection(vector);
-    var vector = new THREE.Vector3(1, 0, 0);
-    // var dx = vector.x - ball.position.x;
-    // var dz = vector.z - ball.position.z;
-    // var h = (Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2)));
-    // var sin = dz / h;
-    // var cos = dx / h;
     var sin = Math.sin(angle);
     var cos = Math.cos(angle);
     var newX = cos * v;
     var newZ = sin * v;
     ball.v = new THREE.Vector3(newX, 0, newZ);
+    console.log(ball.v);
 }
 
 export function createWorld() {
@@ -119,7 +153,7 @@ export function createWorld() {
 
 function createBalls() {
     createBall({ x: -15, y: 0.3, z: 0 }, 'white-ball', 0xffffff);
-    create15Balls(18, -5);
+    create15Balls(18, -2.75);
 
 }
 
@@ -303,7 +337,7 @@ export function create15Balls(init_x, init_z) {
     var cnt = 1;
     for (var i = 0; i < 5; i++) {
         var newZ = z_pos + (Global.BALL_RADIUS * 2.1 * i);
-        // createBall({ x: x_pos, y: 0.3, z: newZ }, cnt + "ball", 0xff0000);
+        createBall({ x: x_pos, y: 0.3, z: newZ }, cnt + "ball", 0xff0000);
         cnt++;
     }
     z_pos += Global.BALL_RADIUS;
@@ -333,33 +367,12 @@ export function create15Balls(init_x, init_z) {
 }
 
 
-
-document.addEventListener('keydown', updateStickRotation);
-var stickRotation = 0;
-
-function updateStickRotation(e) {
-    if (e.code == 'KeyW') {
-        console.log("ETERN");
-        var stick = scene.getObjectByName("stick");
-        stickRotation = 0.05;
-        stick.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), stickRotation);
-    }
-    if (e.code == 'KeyS') {
-        console.log("ETERN");
-        var stick = scene.getObjectByName("stick");
-        stickRotation = -0.05;
-        stick.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), stickRotation);
-    }
-}
-
 function createRay() {
     const loader = new GLTFLoader();
     loader.load('./Models/stick.glb', function(gltf) {
         var stick = gltf.scene;
         stick.scale.set(5, 5, 5);
         stick.name = "stick";
-        stick.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -1.57);
-        stick.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), -0.1);
         scene.add(gltf.scene);
         return;
 
@@ -381,6 +394,26 @@ function updateStickPosition() {
     else {
         stick.visible = true;
         stick.position.set(white_ball.position.x, 0, white_ball.position.z);
+    }
+}
+
+document.addEventListener('keydown', updateStickRotation);
+var stickRotation = 0;
+
+function updateStickRotation(e) {
+    if (e.code == 'KeyW') {
+        console.log("ETERN");
+        var stick = scene.getObjectByName("stick");
+        stickRotation = 0.05;
+        stick.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), stickRotation);
+        console.log(stick.rotation);
+    }
+    if (e.code == 'KeyS') {
+        console.log("ETERN");
+        var stick = scene.getObjectByName("stick");
+        stickRotation = -0.05;
+        stick.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), stickRotation);
+        console.log(stick.rotation);
     }
 }
 
