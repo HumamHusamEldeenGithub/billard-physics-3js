@@ -52,8 +52,8 @@ async function init() {
     stats = Stats();
     document.body.appendChild(stats.dom);
     var button = document.createElement('button');
-    button.innerHTML = "START";
-    button.style = "position: absolute;right: 0;top:0;";
+    button.innerHTML = "HIT";
+    button.style = "position: absolute;right: 0;top:0;padding:20px";
     button.onclick = start;
     document.body.appendChild(button);
     createWorld();
@@ -70,6 +70,7 @@ var animate = function() {
 export async function render() {
     Movement.move();
     //updateCameraPosition();
+    updateStickPosition();
     renderer.render(scene, camera);
 }
 
@@ -87,17 +88,21 @@ animate();
 
 export async function start() {
     var white_ball = scene.getObjectByName("white-ball");
-    hitBall(5, -3, Global.POWER, white_ball);
+    var stick = scene.getObjectByName("stick");
+    var rotation = stick.rotation.x != 0 ? stick.rotation.y + 1.57 : stick.rotation.y - 1.57;
+    hitBall(rotation, Global.POWER, white_ball);
 }
-export async function hitBall(x, z, v, ball) {
+export async function hitBall(angle, v, ball) {
     // var vector = new THREE.Vector3();
     // camera.getWorldDirection(vector);
     var vector = new THREE.Vector3(1, 0, 0);
-    var dx = vector.x - ball.position.x;
-    var dz = vector.z - ball.position.z;
-    var h = (Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2)));
-    var sin = dz / h;
-    var cos = dx / h;
+    // var dx = vector.x - ball.position.x;
+    // var dz = vector.z - ball.position.z;
+    // var h = (Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2)));
+    // var sin = dz / h;
+    // var cos = dx / h;
+    var sin = Math.sin(angle);
+    var cos = Math.cos(angle);
     var newX = cos * v;
     var newZ = sin * v;
     ball.v = new THREE.Vector3(newX, 0, newZ);
@@ -336,15 +341,14 @@ function updateStickRotation(e) {
     if (e.code == 'KeyW') {
         console.log("ETERN");
         var stick = scene.getObjectByName("stick");
-        stickRotation = 0.1;
+        stickRotation = 0.05;
         stick.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), stickRotation);
     }
     if (e.code == 'KeyS') {
         console.log("ETERN");
         var stick = scene.getObjectByName("stick");
-        stickRotation = -0.1;
+        stickRotation = -0.05;
         stick.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), stickRotation);
-        console.log(stick.rotation);
     }
 }
 
@@ -352,11 +356,11 @@ function createRay() {
     const loader = new GLTFLoader();
     loader.load('./Models/stick.glb', function(gltf) {
         var stick = gltf.scene;
-        //stick.position.set(position.x - 2, position.y + 0.5, position.z);
-        stick.scale.set(1, 1, 1);
+        stick.scale.set(5, 5, 5);
         stick.name = "stick";
         stick.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -1.57);
-        //scene.add(gltf.scene);
+        stick.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), -0.1);
+        scene.add(gltf.scene);
         return;
 
     }, undefined, function(error) {
@@ -365,13 +369,19 @@ function createRay() {
 
     });
 
-    // var geometry = new THREE.BoxGeometry(1, 1, 1);
-    // var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    // var cube = new THREE.Mesh(geometry, material);
-    // cube.position.set(0, 0, 0);
-    // cube.name = 'ray';
-    // scene.add(cube);
+}
 
+function updateStickPosition() {
+    var white_ball = scene.getObjectByName("white-ball");
+    var stick = scene.getObjectByName("stick");
+    if (!white_ball.v || !stick)
+        return;
+    if (white_ball.v.x != 0 || white_ball.v.z != 0)
+        stick.visible = false;
+    else {
+        stick.visible = true;
+        stick.position.set(white_ball.position.x, 0, white_ball.position.z);
+    }
 }
 
 function updateCameraPosition() {

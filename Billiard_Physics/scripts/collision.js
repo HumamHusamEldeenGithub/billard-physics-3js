@@ -40,8 +40,8 @@ export async function checkCollision(name, ball) {
 
                     ball.v = v1nTag.add(v1tTag);
                     value2.v = v2nTag.add(v2tTag);
-                    ball.v.multiplyScalar(thermalEnergy);
-                    value2.v.multiplyScalar(thermalEnergy);
+                    ball.v.multiplyScalar(Global.THERMAL_ENERGY);
+                    value2.v.multiplyScalar(Global.THERMAL_ENERGY);
 
                     while (ball.position.distanceTo(value2.position) < Global.BALL_RADIUS * 2) {
                         ball.position.add(ball.v.clone().multiplyScalar(Global.DELTA_TIME));
@@ -75,12 +75,12 @@ export async function checkCollision(name, ball) {
                     newVelocity.x = ball.v.x - 2 * (ball.v.x * value2.normalVector.x) * value2.normalVector.x;
                     ball.position.x = value2.position.x + (value2.normalVector.x * (Global.BALL_RADIUS + 0.0001));
                     ball.v.set(newVelocity.x, 0, ball.v.z);
-                    ball.v.multiplyScalar(thermalEnergy);
+                    ball.v.multiplyScalar(Global.THERMAL_ENERGY);
                 } else if (Math.abs(wall_pos.z - ball_pos.z) < Global.BALL_RADIUS && (value2.name.includes('top') || value2.name.includes('bottom'))) {
                     newVelocity.z = ball.v.z - 2 * (ball.v.z * value2.normalVector.z) * value2.normalVector.z;
                     ball.position.z = value2.position.z + (value2.normalVector.z * (Global.BALL_RADIUS + 0.0001));
                     ball.v.set(ball.v.x, 0, newVelocity.z);
-                    ball.v.multiplyScalar(thermalEnergy);
+                    ball.v.multiplyScalar(Global.THERMAL_ENERGY);
                 }
             }
         }
