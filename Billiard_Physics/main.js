@@ -110,6 +110,9 @@ function setSceneInputs() {
             case 'THERMAL_ENERGY':
                 inputs[i].value = Global.THERMAL_ENERGY;
                 break;
+            case 'WALL_LOSS_ENERGY':
+                inputs[i].value = Global.WALL_LOSS_ENERGY;
+                break;
         }
     }
 }
@@ -130,7 +133,6 @@ export async function start() {
     var white_ball = scene.getObjectByName("white-ball");
     var stick = scene.getObjectByName("stick");
     var rotation = stick.rotation.x != 0 ? Math.PI + stick.rotation.y : -stick.rotation.y;
-    console.log(Global.POWER);
     hitBall(rotation, Global.POWER, white_ball);
 }
 export async function hitBall(angle, v, ball) {
@@ -139,12 +141,11 @@ export async function hitBall(angle, v, ball) {
     var newX = cos * v;
     var newZ = sin * v;
     ball.v = new THREE.Vector3(newX, 0, newZ);
-    console.log(ball.v);
 }
 
 export function createWorld() {
     tableLoader();
-    createRay();
+    createStick();
     createHols();
     createWalls();
     createBalls();
@@ -367,7 +368,7 @@ export function create15Balls(init_x, init_z) {
 }
 
 
-function createRay() {
+function createStick() {
     const loader = new GLTFLoader();
     loader.load('./Models/stick.glb', function(gltf) {
         var stick = gltf.scene;
@@ -402,40 +403,13 @@ var stickRotation = 0;
 
 function updateStickRotation(e) {
     if (e.code == 'KeyW') {
-        console.log("ETERN");
         var stick = scene.getObjectByName("stick");
-        stickRotation = 0.05;
+        stickRotation = 0.04;
         stick.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), stickRotation);
-        console.log(stick.rotation);
     }
     if (e.code == 'KeyS') {
-        console.log("ETERN");
         var stick = scene.getObjectByName("stick");
-        stickRotation = -0.05;
+        stickRotation = -0.04;
         stick.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), stickRotation);
-        console.log(stick.rotation);
-    }
-}
-
-function updateCameraPosition() {
-
-    var white_ball = scene.getObjectByName("white-ball");
-    if (Math.abs(white_ball.v.x) > 0.01 || Math.abs(white_ball.v.z) > 0.01) {
-        if (white_ball.position.distanceTo(camera.position) < 5) {
-            camera.position.y = 5;
-            var disX = white_ball.position.x - camera.position.x;
-            var disZ = white_ball.position.z - camera.position.z;
-            console.log(disX);
-            if (disX > 1) {
-                camera.position.x += 0.1;
-            } else if (disX < 0.8) {
-                camera.position.x -= 0.1;
-            }
-            if (disZ > 1) {
-                camera.position.Z += 0.1;
-            } else if (disZ < 0.8) {
-                camera.position.x -= 0.1;
-            }
-        }
     }
 }

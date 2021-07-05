@@ -19,8 +19,16 @@ export async function move() {
             }
             var accX = 0,
                 accZ = 0;
-            try { accX = calculateFriction(value.v.x) / Global.BALL_MASS; } catch (e) { value.v.set(0, 0, value.v.z); }
-            try { accZ = calculateFriction(value.v.z) / Global.BALL_MASS; } catch (e) { value.v.set(value.v.x, 0, 0); }
+            try {
+                var angle = Math.atan(value.v.z / value.v.x);
+                angle = Math.cos(angle);
+                accX = calculateFriction(value.v.x, angle) / Global.BALL_MASS;
+            } catch (e) { value.v.set(0, 0, value.v.z); }
+            try {
+                var angle = Math.atan(value.v.z / value.v.x);
+                angle = Math.sin(angle);
+                accZ = calculateFriction(value.v.z, angle) / Global.BALL_MASS;
+            } catch (e) { value.v.set(value.v.x, 0, 0); }
 
             var newVelocityX = value.v.x + accX * Global.DELTA_TIME;
             var newVelocityZ = value.v.z + accZ * Global.DELTA_TIME;
@@ -41,29 +49,26 @@ export async function move() {
 
             value.position.z = newPos.z;
             value.position.x = newPos.x;
-            if (value.name == 'white-ball') {
-                console.log(value.v);
-            }
         }
     })
 }
 
-function calculateFriction(velocity, ) {
-    var friction = Global.KINETIC_FRICTION_COEFFICIENT * Global.GRAVITY * Global.BALL_MASS * Global.SCALER;
+function calculateFriction(velocity, angle) {
     if (velocity == 0)
         return 0;
-    friction = friction * -1 * (velocity / Math.abs(velocity));
+    var friction = Global.KINETIC_FRICTION_COEFFICIENT * Global.BALL_RADIUS * Global.GRAVITY * Global.BALL_MASS * angle * Global.SCALER;
+    friction = Math.abs(friction) * -1 * (velocity / Math.abs(velocity));
 
     return friction;
 }
 
 function rotateBall(object, newPos, prevPos) {
-    var totalXMovment = newPos.x - prevPos.x;
-    var totalZMovment = newPos.z - prevPos.z;
-    var distance = new THREE.Vector3(totalXMovment, 0, totalZMovment);
+    var velocityX = newPos.x - prevPos.x;
+    var velocityZ = newPos.z - prevPos.z;
+    var velocity = new THREE.Vector3(velocityX, 0, velocityZ);
     var ballRotationAxis = new THREE.Vector3(0, 1, 0);
-    ballRotationAxis.cross(distance).normalize();
-    var velocityMag = distance.length();
-    var rotationAmount = velocityMag * (Math.PI * 2) / Global.CIRCUMFERENCE;
-    object.rotateOnWorldAxis(ballRotationAxis, rotationAmount)
+    ballRotationAxis.cross(velocity).normalize();
+    var velocityMag = velocity.length();
+    var rotationalSpeed = velocityMag * (Math.PI * 2) / Global.CIRCUMFERENCE;
+    object.rotateOnWorldAxis(ballRotationAxis, rotationalSpeed)
 }

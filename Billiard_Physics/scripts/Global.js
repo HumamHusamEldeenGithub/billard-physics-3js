@@ -16,9 +16,11 @@ export var WEIGHT = BALL_MASS * GRAVITY;
 
 export var STATIC_FRICTION_COEFFICIENT = 0.08;
 
-export var KINETIC_FRICTION_COEFFICIENT = 0.3;
+export var KINETIC_FRICTION_COEFFICIENT = 0.35;
 
 export var THERMAL_ENERGY = 0.05;
+
+export var WALL_LOSS_ENERGY = 0.135;
 
 export var SCALER = 6.25;
 
@@ -45,6 +47,9 @@ export function setValue(name, value) {
             break;
         case 'THERMAL_ENERGY':
             THERMAL_ENERGY = value;
+            break;
+        case 'WALL_LOSS_ENERGY':
+            WALL_LOSS_ENERGY = value;
             break;
     }
 }

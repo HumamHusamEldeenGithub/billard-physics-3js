@@ -16,7 +16,7 @@
         <br/>
         <label style="text-align: center;" for="BALL_MASS"> BALL_MASS <input id="BALL_MASS" class="text-input" type="number" placeholder="BALL_MASS"></label>
         <br/>
-        <label style="text-align: center;" for="POWER"> POWER <input id="POWER"  type="range" min="0" max="200" value="50" step="1" placeholder="POWER" ></label>
+        <label style="text-align: center;" for="POWER"> POWER <input id="POWER"  type="range" min="0" max="130" value="50" step="1" placeholder="POWER" ></label>
         <br/><br/>
         <label style="text-align: center;" for="STATIC_FRICTION_COEFFICIENT"> STATIC_FRICTION_COEFFICIENT <input id="STATIC_FRICTION_COEFFICIENT" class="text-input" type="number" placeholder="STATIC_FRICTION_COEFFICIENT"></label>
         <br/>
@@ -25,6 +25,8 @@
         <label style="text-align: center;" for="GRAVITY"> GRAVITY <input id="GRAVITY" class="text-input" type="number" placeholder="GRAVITY"></label>
         <br/>
         <label style="text-align: center;" for="THERMAL_ENERGY"> THERMAL_ENERGY <input id="THERMAL_ENERGY" class="text-input" type="number" placeholder="THERMAL_ENERGY"></label>
+        <br/>
+        <label style="text-align: center;" for="WALL_LOSS_ENERGY"> WALL_LOSS_ENERGY <input id="WALL_LOSS_ENERGY" class="text-input" type="number" placeholder="WALL_LOSS_ENERGY"></label>
         <br/>
         <button id='save-button' style="    position: relative;margin: auto;display: block;">Save</button>
 
@@ -44,11 +46,11 @@
     }
     
     .inputs-div-show {
-        animation: enter-div 1.5s forwards ease;
+        animation: enter-div 0.8s forwards ease;
     }
     
     .inputs-div-hide {
-        animation: exit-div 1.5s forwards ease;
+        animation: exit-div 0.8s forwards ease;
     }
     
     .text-input {
