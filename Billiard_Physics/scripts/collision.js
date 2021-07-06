@@ -3,8 +3,6 @@ import * as THREE from '../three';
 import * as Global from './Global';
 
 
-var thermalEnergy = 0.95;
-
 export async function checkCollision(name, ball) {
     var scene = await MainScene.getScene();
     scene.children.forEach(async(value2, key2) => {
@@ -71,7 +69,7 @@ export async function checkCollision(name, ball) {
             //check if the current ball colliding with any of the table's walls
             if (value2.name.includes('Wall')) {
                 try {
-                    var ball_pos = ball.position.clone().add(ball.v.clone().multiplyScalar(1 / 100));
+                    var ball_pos = ball.position.clone().add(ball.v.clone().multiplyScalar(Global.DELTA_TIME));
                     var wall_pos = value2.position.clone();
                     var newVelocity = new THREE.Vector3();
                     if (Math.abs(wall_pos.x - ball_pos.x) < Global.BALL_RADIUS && (value2.name.includes('right') || value2.name.includes('left'))) {

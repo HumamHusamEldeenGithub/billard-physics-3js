@@ -13,7 +13,7 @@ export async function move() {
 
             Collision.checkCollision(key, value);
 
-            if (Math.abs(value.v.x) < 0.125 && Math.abs(value.v.z) < 0.125) {
+            if (Math.abs(value.v.x) < Global.MAXIMUM_ACCELERATION && Math.abs(value.v.z) < Global.MAXIMUM_ACCELERATION) {
                 value.v = new THREE.Vector3();
                 return;
             }
@@ -33,7 +33,7 @@ export async function move() {
             var newVelocityX = value.v.x + accX * Global.DELTA_TIME;
             var newVelocityZ = value.v.z + accZ * Global.DELTA_TIME;
 
-            if (Math.abs(newVelocityX) < 0.125 && Math.abs(newVelocityZ) < 0.125) {
+            if (Math.abs(newVelocityX) < Global.MAXIMUM_ACCELERATION && Math.abs(newVelocityZ) < Global.MAXIMUM_ACCELERATION) {
                 value.v.set(0, 0, 0);
                 return;
 

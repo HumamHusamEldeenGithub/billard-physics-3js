@@ -133,7 +133,8 @@ export async function start() {
     var white_ball = scene.getObjectByName("white-ball");
     var stick = scene.getObjectByName("stick");
     var rotation = stick.rotation.x != 0 ? Math.PI + stick.rotation.y : -stick.rotation.y;
-    hitBall(rotation, Global.POWER, white_ball);
+    if (white_ball.v.x == 0 && white_ball.v.z == 0)
+        hitBall(rotation, Global.POWER, white_ball);
 }
 export async function hitBall(angle, v, ball) {
     var sin = Math.sin(angle);
@@ -240,7 +241,7 @@ export function createWalls() {
 
 function createHols() {
     //top left 
-    var geometry = new THREE.CircleGeometry(2.5, 32, Math.PI, Math.PI);
+    var geometry = new THREE.CircleGeometry(Global.HOLE_RADIUS, 32, Math.PI, Math.PI);
     var material = new THREE.MeshBasicMaterial({ color: 0x000000 });
     material.side = THREE.DoubleSide;
     var sphere = new THREE.Mesh(geometry, material);
@@ -250,7 +251,7 @@ function createHols() {
     sphere.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), 4.0);
     scene.add(sphere);
     //bottom left 
-    geometry = new THREE.CircleGeometry(2.5, 32, Math.PI, Math.PI);
+    geometry = new THREE.CircleGeometry(Global.HOLE_RADIUS, 32, Math.PI, Math.PI);
     material = new THREE.MeshBasicMaterial({ color: 0x000000 });
     material.side = THREE.DoubleSide;
     sphere = new THREE.Mesh(geometry, material);
@@ -260,7 +261,7 @@ function createHols() {
     sphere.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -0.7);
     scene.add(sphere);
     //top right 
-    geometry = new THREE.CircleGeometry(2.5, 32, Math.PI, Math.PI);
+    geometry = new THREE.CircleGeometry(Global.HOLE_RADIUS, 32, Math.PI, Math.PI);
     material = new THREE.MeshBasicMaterial({ color: 0x000000 });
     material.side = THREE.DoubleSide;
     sphere = new THREE.Mesh(geometry, material);
@@ -270,7 +271,7 @@ function createHols() {
     sphere.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), 2.53073);
     scene.add(sphere);
     //bottom right 
-    geometry = new THREE.CircleGeometry(2.5, 32, Math.PI, Math.PI);
+    geometry = new THREE.CircleGeometry(Global.HOLE_RADIUS, 32, Math.PI, Math.PI);
     material = new THREE.MeshBasicMaterial({ color: 0x000000 });
     material.side = THREE.DoubleSide;
     sphere = new THREE.Mesh(geometry, material);
@@ -280,7 +281,7 @@ function createHols() {
     sphere.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), 0.7);
     scene.add(sphere);
     //top mid 
-    geometry = new THREE.CircleGeometry(2, 32, Math.PI, Math.PI);
+    geometry = new THREE.CircleGeometry(Global.HOLE_RADIUS, 32, Math.PI, Math.PI);
     material = new THREE.MeshBasicMaterial({ color: 0x000000 });
     material.side = THREE.DoubleSide;
     sphere = new THREE.Mesh(geometry, material);
@@ -290,7 +291,7 @@ function createHols() {
     sphere.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), 3.14);
     scene.add(sphere);
     //bottom mid 
-    geometry = new THREE.CircleGeometry(2, 32, Math.PI, Math.PI);
+    geometry = new THREE.CircleGeometry(Global.HOLE_RADIUS, 32, Math.PI, Math.PI);
     material = new THREE.MeshBasicMaterial({ color: 0x000000 });
     material.side = THREE.DoubleSide;
     sphere = new THREE.Mesh(geometry, material);

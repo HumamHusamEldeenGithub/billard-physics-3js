@@ -24,6 +24,10 @@ export var WALL_LOSS_ENERGY = 0.135;
 
 export var SCALER = 6.25;
 
+export var MAXIMUM_ACCELERATION = KINETIC_FRICTION_COEFFICIENT * GRAVITY * BALL_RADIUS * SCALER * DELTA_TIME;
+
+export var HOLE_RADIUS = 2;
+
 
 export function setValue(name, value) {
     switch (name) {
@@ -52,4 +56,5 @@ export function setValue(name, value) {
             WALL_LOSS_ENERGY = value;
             break;
     }
+    MAXIMUM_ACCELERATION = KINETIC_FRICTION_COEFFICIENT * GRAVITY * BALL_RADIUS * SCALER * DELTA_TIME;
 }
